@@ -1,0 +1,1 @@
+path('', views.dashboard_home, name='dashboard_home'),

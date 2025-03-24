@@ -1,0 +1,21 @@
+### Plan:
+
+1. **Remove `@csrf_exempt` Decorator**:
+   - Replace the `@csrf_exempt` decorator in both the `api_register` and `login_view` functions with the `@csrf_protect` decorator to ensure CSRF protection is enabled.
+
+2. **Update `api_register` Function**:
+   - Ensure that the function requires a valid CSRF token for POST requests.
+   - The function will remain largely the same, but it will now enforce CSRF protection.
+
+3. **Update `login_view` Function**:
+   - Similar to `api_register`, ensure that this function also requires a valid CSRF token for POST requests.
+
+4. **Ensure CSRF Token is Passed in API Requests**:
+   - Update the JavaScript code that makes API requests to include the CSRF token in the headers. This will involve using the `getCookie` function to retrieve the CSRF token and passing it in the `X-CSRFToken` header.
+
+5. **Test the Changes**:
+   - After making the changes, test the API endpoints to ensure that they are functioning correctly and that CSRF protection is enforced.
+
+### Follow-up Steps:
+- Verify that the CSRF token is included in the requests from the frontend.
+- Ensure that the changes do not break any existing functionality.

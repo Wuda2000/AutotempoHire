@@ -1,0 +1,137 @@
+{% extends "auth_app/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">🚗 Hire {{ driver.user.username }}</h2>
+    <form method="POST" action="{% url 'hire_driver' driver.id %}">
+        {% csrf_token %}
+        {% if request.session.trip_id %}
+    <input type="hidden" name="trip_id" value="{{ request.session.trip_id }}">
+         {% endif %}
+        
+        <div class="mb-3">
+            <label class="form-label">📅 Departure Time</label>
+            <input type="datetime-local" name="departure_time" id="departure_time" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">🕒 Expected Arrival Time</label>
+            <input type="datetime-local" name="arrival_time" id="arrival_time" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">⏳ Trip Duration (Hours)</label>
+            <input type="text" id="trip_duration" class="form-control" placeholder="Calculated automatically" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">📍 Trip Pickup Point</label>
+            <input type="text" name="pickup_point" id="pickup_point" class="form-control" placeholder="Enter pickup location" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">📍 Trip Destination</label>
+            <input type="text" name="destination" id="destination" class="form-control" placeholder="Enter destination" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">📏 Distance (km)</label>
+            <input type="text" id="trip_distance" class="form-control" placeholder="Calculated automatically" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">💰 Payment Offered (KES)</label>
+            <input type="number" name="payment_offered" class="form-control" placeholder="Enter amount" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">🚀 Proceed to Payment</button>
+    </form>
+</div>
+
+<!-- OpenRouteService API for Free Distance Calculation -->
+<script>
+    let API_KEY = "";
+
+    // Fetch API key from Django backend
+    fetch("/get-api-key/")
+        .then(response => response.json())
+        .then(data => {
+            API_KEY = data.api_key;
+        })
+        .catch(error => console.error("Error fetching API Key:", error));
+
+    function getCoordinates(location, callback) {
+        if (!API_KEY) {
+            console.error("API Key not loaded yet.");
+            return;
+        }
+
+        fetch(`https://api.openrouteservice.org/geocode/search?api_key=${API_KEY}&text=${location}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.features.length > 0) {
+                    const coordinates = data.features[0].geometry.coordinates;
+                    callback(coordinates[1], coordinates[0]); // Lat, Lon
+                } else {
+                    alert("Location not found: " + location);
+                }
+            })
+            .catch(error => console.error("Geocoding error:", error));
+    }
+
+    function calculateDistance() {
+        let pickup = document.getElementById("pickup_point").value;
+        let destination = document.getElementById("destination").value;
+
+        if (pickup && destination) {
+            getCoordinates(pickup, (lat1, lon1) => {
+                getCoordinates(destination, (lat2, lon2) => {
+                    const body = JSON.stringify({
+                        locations: [[lon1, lat1], [lon2, lat2]],
+                        metrics: ["distance"],
+                        units: "km"
+                    });
+
+                    fetch("https://api.openrouteservice.org/v2/matrix/driving-car", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": API_KEY,
+                            "Content-Type": "application/json"
+                        },
+                        body: body
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        let distance = data.distances[0][1]; // Distance in km
+                        document.getElementById("trip_distance").value = distance.toFixed(2) + " km";
+                    })
+                    .catch(error => console.error("Distance calculation error:", error));
+                });
+            });
+        }
+    }
+
+    document.getElementById("pickup_point").addEventListener("change", calculateDistance);
+    document.getElementById("destination").addEventListener("change", calculateDistance);
+</script>
+
+<script>
+    document.getElementById("departure_time").addEventListener("change", calculateDuration);
+    document.getElementById("arrival_time").addEventListener("change", calculateDuration);
+    
+    function calculateDuration() {
+        let departureTime = new Date(document.getElementById("departure_time").value);
+        let arrivalTime = new Date(document.getElementById("arrival_time").value);
+        
+        if (!isNaN(departureTime) && !isNaN(arrivalTime) && arrivalTime > departureTime) {
+            let duration = (arrivalTime - departureTime) / (1000 * 60 * 60);
+            document.getElementById("trip_duration").value = duration.toFixed(2) + " hours";
+        } else {
+            document.getElementById("trip_duration").value = "";
+        }
+    }
+</script>
+
+
+{% endblock %}

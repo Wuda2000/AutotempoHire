@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Become a Temporary Driver</h2>
+
+    <div class="card shadow-sm p-4 mt-4">
+        <h4>Qualifications to Become a Temporary Driver</h4>
+        <ul>
+            <li>Must be at least 21 years old.</li>
+            <li>Have a valid Kenyan Certificate of Secondary Education (KCSE) or an equivalent qualification.</li>
+            <li>Hold a valid Certificate of Good Conduct.</li>
+            <li>Have at least 1 year of driving experience.</li>
+            <li>Be physically and mentally fit for the role.</li>
+        </ul>
+    </div>
+
+    <div class="card shadow-sm p-4 mt-4">
+        <h4>Application Form</h4>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+                <!-- First Name -->
+                <div class="col-md-6">
+                    <label for="first_name" class="form-label">First Name</label>
+                    <input type="text" name="first_name" id="first_name" class="form-control" required>
+                </div>
+
+                <!-- Surname -->
+                <div class="col-md-6">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input type="text" name="surname" id="surname" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- Age -->
+                <div class="col-md-6">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" name="age" id="age" class="form-control" required min="21">
+                </div>
+
+                <!-- Ethnicity -->
+                <div class="col-md-6">
+                    <label for="ethnicity" class="form-label">Ethnicity</label>
+                    <select name="ethnicity" id="ethnicity" class="form-control" required>
+                        <option value="" disabled selected>Select your ethnicity</option>
+                        <option value="Kikuyu">Kikuyu</option>
+                        <option value="Luo">Luo</option>
+                        <option value="Luhya">Luhya</option>
+                        <option value="Kalenjin">Kalenjin</option>
+                        <option value="Kamba">Kamba</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- Years of Experience -->
+                <div class="col-md-6">
+                    <label for="years_of_experience" class="form-label">Years of Experience</label>
+                    <input type="number" name="years_of_experience" id="years_of_experience" class="form-control" required min="1">
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- KCSE or Equivalent Qualification -->
+                <div class="col-md-6">
+                    <label for="kcse_certificate" class="form-label">KCSE or Equivalent Qualification</label>
+                    <input type="file" name="kcse_certificate" id="kcse_certificate" class="form-control" required>
+                </div>
+
+                <!-- Certificate of Good Conduct -->
+                <div class="col-md-6">
+                    <label for="good_conduct" class="form-label">Certificate of Good Conduct</label>
+                    <input type="file" name="good_conduct" id="good_conduct" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <!-- Cover Letter -->
+                <div class="col-md-6">
+                    <label for="cover_letter" class="form-label">Cover Letter</label>
+                    <input type="file" name="cover_letter" id="cover_letter" class="form-control" required>
+                </div>
+
+                <!-- CV -->
+                <div class="col-md-6">
+                    <label for="cv" class="form-label">CV</label>
+                    <input type="file" name="cv" id="cv" class="form-control" required>
+                </div>
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <div class="text-center mt-4">
+
+                <button type="submit" class="btn btn-primary">Submit Application</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

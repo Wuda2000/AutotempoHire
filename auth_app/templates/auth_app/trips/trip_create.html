@@ -1,0 +1,38 @@
+{% extends 'auth_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2>Create a New Trip</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="origin">Origin:</label>
+            <input type="text" class="form-control" id="origin" name="origin" required>
+        </div>
+
+        <div class="form-group">
+            <label for="destination">Destination:</label>
+            <input type="text" class="form-control" id="destination" name="destination" required>
+        </div>
+
+        <div class="form-group">
+            <label for="pickup_location">Pickup Location:</label>
+            <input type="text" class="form-control" id="pickup_location" name="pickup_location" required>
+        </div>
+
+        <div class="form-group">
+            <label for="trip_date">Trip Date:</label>
+            <input type="date" class="form-control" id="trip_date" name="trip_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" class="form-control" id="price" name="price" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Create Trip</button>
+        <a href="{% url 'trip_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

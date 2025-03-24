@@ -1,0 +1,83 @@
+{% extends "auth_app/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2 class="text-center">Drivers List</h2>
+
+<div class="container">
+    <div class="row">
+        {% for driver in drivers %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm rounded driver-card">
+                    {% if driver.user.profile_picture %}
+                        <img src="{{ driver.user.profile_picture.url }}" class="card-img-top driver-img" alt="Driver Profile">
+                    {% else %}
+                        <img src="{% static 'images/default_profile.png' %}" class="card-img-top driver-img" alt="Default Profile">
+                    {% endif %}
+                    
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ driver.user.username }}</h5>
+                        <p class="card-text">Location: {{ driver.user.location }}</p>
+                        <p class="card-text">Experience: {{ driver.years_of_experience }} years</p>
+                        <p class="card-text">Rating: ⭐ {{ driver.rating|default:"N/A" }}/5</p>
+
+                        <!-- ✅ Display Latest Review Below Rating -->
+                        {% with latest_review=driver.reviews.all|dictsortreversed:"created_at"|first %}
+                            {% if latest_review %}
+                                <p class="card-text"><strong>Latest Review:</strong> "{{ latest_review.review_message }}"</p>
+                            {% else %}
+                                <p class="card-text"><strong>Latest Review:</strong> No reviews yet.</p>
+                            {% endif %}
+                        {% endwith %}
+
+                        <!-- ✅ View Reviews Button -->
+                        <a href="{% url 'driver_reviews' driver.id %}" class="btn btn-info">View Reviews</a>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="{% url 'hire_driver' driver.id %}" class="btn btn-success">Book Driver</a> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No drivers found.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<h2>Recommended Drivers</h2>
+<div id="recommended-driver-container"></div>
+
+<style>
+    .driver-card {
+        transition: transform 0.3s ease-in-out;
+        border: 2px solid #3498db;
+        border-radius: 10px;
+        overflow: hidden;
+        max-width: 320px;
+        background-color: #f8f9fa;
+    }
+    .driver-card .btn {
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 5px;
+        display: block;
+    }
+    .driver-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 15px rgba(52, 152, 219, 0.4);
+    }
+    .driver-img {
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 3px solid #3498db;
+    }
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+    }
+</style>
+{% endblock %}

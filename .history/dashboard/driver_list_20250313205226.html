@@ -1,0 +1,10 @@
+{% for driver in drivers %}
+<div class="driver-card">
+    <img src="{{ driver.user.profile_picture.url }}" class="profile-pic">
+    <div class="hover-card">
+        <h3>{{ driver.user.username }}</h3>
+        <p>Location: {{ driver.location }}</p>
+        <p>Years of Experience: {{ driver.qualification_years }}</p>
+    </div>
+</div>
+{% endfor %}
