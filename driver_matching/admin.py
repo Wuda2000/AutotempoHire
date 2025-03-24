@@ -21,13 +21,15 @@ class DriverMatchAdmin(admin.ModelAdmin):
     reject_match.short_description = "Reject selected matches"
 
 # Register additional models if they exist
-from .models import AnotherModel  # Example: Import other models
+# from .models import AnotherModel  # Example: Import other models
 
-@admin.register(AnotherModel)
-class AnotherModelAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "created_at")  # Adjust based on model fields
-    search_fields = ("name",)
-    list_filter = ("created_at",)
-    ordering = ("-created_at",)
+
+# @admin.register(AnotherModel)
+# class AnotherModelAdmin(admin.ModelAdmin):
+#     list_display = ("id", "name", "created_at")  # Adjust based on model fields
+#     search_fields = ("name",)
+#     list_filter = ("created_at",)
+#     ordering = ("-created_at",)
+
 
 # If there are more models, register them similarly.
