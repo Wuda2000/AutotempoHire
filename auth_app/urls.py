@@ -6,7 +6,8 @@ from .views import (
     api_register, 
     dashboard, 
     home, 
-    login_view, 
+    ApiLoginView, 
+
     forgot_password,  
     reset_password,
     profile,
@@ -18,7 +19,8 @@ urlpatterns = [
     path('', home, name='home'),  
     path('home/', home, name='home'),
     path('register/', register, name='register'),
-    path('login/', login_view, name='login'),
+    path('login/', ApiLoginView.as_view(), name='login'),
+
     path('logout/', logout_view, name='logout'),
     path('forgot-password/', forgot_password, name='forgot_password'),
     path('reset-password/<str:token>/', reset_password, name='reset_password'),

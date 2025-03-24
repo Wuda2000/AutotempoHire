@@ -3,10 +3,13 @@ from .models import DriverMatch  # Import necessary models
 
 @admin.register(DriverMatch)
 class DriverMatchAdmin(admin.ModelAdmin):
-    list_display = ("id", "driver", "car_owner", "trip_date", "match_score")  # Display key fields
+    list_display = ("id", "driver")  # Display only valid fields
+
     search_fields = ("driver__username", "car_owner__username")  # Enable search by related user fields
-    list_filter = ("trip_date", "match_score")  # Filter by trip date and match score
-    ordering = ("-trip_date",)  # Order by most recent trips
+    list_filter = ()  # Remove invalid filters
+
+    ordering = ()  # Remove invalid ordering
+
 
     actions = ["approve_match", "reject_match"]  # Define custom admin actions
 

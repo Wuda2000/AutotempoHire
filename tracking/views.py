@@ -7,7 +7,8 @@ from django_ratelimit.decorators import ratelimit
 import json
 from .tracking_module import update_driver_location, get_driver_location
 from django.shortcuts import get_object_or_404
-from .models import Trip, Driver
+from .models import Trip
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='10/m', method='POST', block=True)  # Limit to 10 requests per minute
